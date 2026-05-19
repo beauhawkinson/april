@@ -228,7 +228,11 @@ function TasksPage() {
                 }
               >
                 <SelectTrigger asChild>
-                  <Button variant="outline" disabled={counts.active === 0 && counts.archived === 0}>
+                  <Button
+                    variant="outline"
+                    disabled={counts.active === 0 && counts.archived === 0}
+                    aria-label="Filter tasks by status"
+                  >
                     <span className="sr-only">Filter tasks by status</span>
 
                     <SelectValue placeholder="Select view" />

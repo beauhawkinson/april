@@ -144,7 +144,7 @@ function SettingsPage() {
               }
             >
               <SelectTrigger asChild>
-                <Button variant="outline">
+                <Button variant="outline" aria-label="Select font size">
                   <span className="sr-only">Select font size</span>
 
                   <SelectValue placeholder="Select font size" />
@@ -217,7 +217,7 @@ function SettingsPage() {
 
               <Select value={theme} onValueChange={handleThemeChange}>
                 <SelectTrigger asChild>
-                  <Button variant="outline">
+                  <Button variant="outline" aria-label="Select interface theme">
                     <span className="sr-only">Select interface theme</span>
 
                     {match(theme)
@@ -286,7 +286,7 @@ function SettingsPage() {
                   }
                 >
                   <SelectTrigger asChild>
-                    <Button variant="outline">
+                    <Button variant="outline" aria-label="Select sidebar position">
                       <span className="sr-only">Select sidebar position</span>
 
                       <SelectValue placeholder="Select sidebar position" />
@@ -316,7 +316,7 @@ function SettingsPage() {
                   }
                 >
                   <SelectTrigger asChild>
-                    <Button variant="outline">
+                    <Button variant="outline" aria-label="Select sidebar variant">
                       <span className="sr-only">Select sidebar variant</span>
 
                       <SelectValue placeholder="Select sidebar variant" />
@@ -349,7 +349,7 @@ function SettingsPage() {
                   }
                 >
                   <SelectTrigger asChild>
-                    <Button variant="outline">
+                    <Button variant="outline" aria-label="Select sidebar collapse behavior">
                       <span className="sr-only">Select sidebar collapse behavior</span>
 
                       <SelectValue placeholder="Select sidebar collapsible option" />
