@@ -206,7 +206,9 @@ function ProfilePage() {
 
           <Item>
             <ItemContent>
-              <ItemTitle>Username</ItemTitle>
+              <ItemTitle>
+                <label htmlFor="name">Username</label>
+              </ItemTitle>
             </ItemContent>
             <ItemActions>
               <Input

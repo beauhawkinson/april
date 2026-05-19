@@ -75,6 +75,7 @@ function TasksPage() {
                     : false
               }
               onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+              aria-label="Select all tasks"
             />
           </div>
         ),
@@ -87,6 +88,7 @@ function TasksPage() {
             <Checkbox
               checked={row.getIsSelected()}
               onCheckedChange={(value) => row.toggleSelected(!!value)}
+              aria-label={`Select task ${row.original.name}`}
             />
           </div>
         ),
@@ -227,6 +229,8 @@ function TasksPage() {
               >
                 <SelectTrigger asChild>
                   <Button variant="outline" disabled={counts.active === 0 && counts.archived === 0}>
+                    <span className="sr-only">Filter tasks by status</span>
+
                     <SelectValue placeholder="Select view" />
                     <ChevronDown className="icon-xs ml-1 text-muted-foreground" />
                   </Button>

@@ -1,3 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_authenticated/settings/")();
+export const Route = createFileRoute("/_authenticated/settings/")({
+  head: () => ({
+    meta: [
+      { title: "Settings" },
+      {
+        name: "description",
+        content: `Manage your settings`,
+      },
+    ],
+  }),
+});

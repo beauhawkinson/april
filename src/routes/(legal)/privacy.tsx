@@ -13,7 +13,7 @@ function PrivacyPage() {
   const effectiveDate = "May 4, 2025";
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-16">
+    <main className="mx-auto max-w-2xl px-4 py-16">
       <div className="mb-10">
         <h1 className="font-semibold text-3xl text-primary">Privacy Policy</h1>
         <p className="mt-2 text-muted-foreground text-sm">Effective date: {effectiveDate}</p>
@@ -167,6 +167,6 @@ function PrivacyPage() {
           </p>
         </section> */}
       </div>
-    </div>
+    </main>
   );
 }

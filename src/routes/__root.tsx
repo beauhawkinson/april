@@ -1,4 +1,10 @@
-import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
+import {
+  HeadContent,
+  Outlet,
+  ScriptOnce,
+  Scripts,
+  createRootRouteWithContext,
+} from "@tanstack/react-router";
 
 import { Toaster } from "@/components/ui/toast";
 import { app } from "@/lib/config/app.config";
@@ -31,8 +37,17 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: app.name },
+      {
+        name: "description",
+        content: app.description,
+      },
     ],
-    links: [{ rel: "stylesheet", href: appCss }],
+    links: [
+      {
+        rel: "stylesheet",
+        href: appCss,
+      },
+    ],
   }),
   component: RootComponent,
 });
@@ -70,6 +85,15 @@ function RootDocument({ children }: PropsWithChildren) {
   return (
     <html lang="en" className={htmlClass} suppressHydrationWarning>
       <head>
+        <ScriptOnce
+          // biome-ignore lint/correctness/noChildrenProp: expected
+          children={`
+      try {
+        const size = localStorage.getItem('font-size-base') || '12px';
+        document.documentElement.style.setProperty('--font-size-base', size);
+      } catch (e) {}
+    `}
+        />
         <HeadContent />
         {themeScript}
       </head>

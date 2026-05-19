@@ -5,6 +5,15 @@ import { getPasskeys } from "@/server/functions/user/get-passkeys";
 import { getWallets } from "@/server/functions/user/get-wallets";
 
 export const Route = createFileRoute("/_authenticated/accounts/")({
+  head: () => ({
+    meta: [
+      { title: "Accounts" },
+      {
+        name: "description",
+        content: `Manage your accounts`,
+      },
+    ],
+  }),
   loader: async () => {
     const [accounts, passkeys, wallets] = await Promise.all([
       getAccounts(),

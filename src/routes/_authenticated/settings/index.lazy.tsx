@@ -145,6 +145,8 @@ function SettingsPage() {
             >
               <SelectTrigger asChild>
                 <Button variant="outline">
+                  <span className="sr-only">Select font size</span>
+
                   <SelectValue placeholder="Select font size" />
                   <ChevronDown className="icon-xs" />
                 </Button>
@@ -173,6 +175,8 @@ function SettingsPage() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="icon-sm">
+                      <span className="sr-only">Theme editor options</span>
+
                       <MoreHorizontal className="icon-sm" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -214,6 +218,8 @@ function SettingsPage() {
               <Select value={theme} onValueChange={handleThemeChange}>
                 <SelectTrigger asChild>
                   <Button variant="outline">
+                    <span className="sr-only">Select interface theme</span>
+
                     {match(theme)
                       .with("light", () => <Sun className="icon-sm" />)
                       .with("dark", () => <Moon className="icon-sm" />)
@@ -257,6 +263,7 @@ function SettingsPage() {
                 id="switch-pointer-cursor"
                 checked={appearance.usePointerCursor}
                 onCheckedChange={(v) => updateAppearance({ usePointerCursor: v })}
+                aria-label="Use pointer cursors for interactive elements"
               />
             </ItemActions>
           </Item>
@@ -280,6 +287,8 @@ function SettingsPage() {
                 >
                   <SelectTrigger asChild>
                     <Button variant="outline">
+                      <span className="sr-only">Select sidebar position</span>
+
                       <SelectValue placeholder="Select sidebar position" />
                       <ChevronDown className="icon-xs" />
                     </Button>
@@ -308,6 +317,8 @@ function SettingsPage() {
                 >
                   <SelectTrigger asChild>
                     <Button variant="outline">
+                      <span className="sr-only">Select sidebar variant</span>
+
                       <SelectValue placeholder="Select sidebar variant" />
                       <ChevronDown className="icon-xs" />
                     </Button>
@@ -339,6 +350,8 @@ function SettingsPage() {
                 >
                   <SelectTrigger asChild>
                     <Button variant="outline">
+                      <span className="sr-only">Select sidebar collapse behavior</span>
+
                       <SelectValue placeholder="Select sidebar collapsible option" />
                       <ChevronDown className="icon-xs" />
                     </Button>

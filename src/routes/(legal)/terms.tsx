@@ -5,7 +5,7 @@ import { app } from "@/lib/config/app.config";
 export const Route = createFileRoute("/(legal)/terms")({
   component: TermsPage,
   head: () => ({
-    meta: [{ title: `Terms of Service — ${app.name}` }],
+    meta: [{ title: "Terms of Service" }],
   }),
 });
 
@@ -13,7 +13,7 @@ function TermsPage() {
   const effectiveDate = "May 4, 2025";
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-16">
+    <main className="mx-auto max-w-2xl px-4 py-16">
       <div className="mb-10">
         <h1 className="font-semibold text-3xl text-primary">Terms of Service</h1>
         <p className="mt-2 text-muted-foreground text-sm">Effective date: {effectiveDate}</p>
@@ -126,6 +126,6 @@ function TermsPage() {
           </p>
         </section> */}
       </div>
-    </div>
+    </main>
   );
 }

@@ -14,6 +14,15 @@ import { getSession } from "@/server/functions/user/get-session";
 
 export const Route = createFileRoute("/sign-in")({
   component: SignInPage,
+  head: () => ({
+    meta: [
+      { title: "Sign in" },
+      {
+        name: "description",
+        content: `Sign in to your account`,
+      },
+    ],
+  }),
   loader: async () => {
     const session = await getSession();
     return { session };
