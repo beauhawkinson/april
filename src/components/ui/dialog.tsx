@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { X } from "lucide-react";
 import { Dialog as DialogPrimitive } from "radix-ui";
 
-import { Button } from "./button";
+import { Button } from "@/components/ui/button";
 
 import type * as React from "react";
 
@@ -18,15 +18,32 @@ function DialogPortal(props: React.ComponentProps<typeof DialogPrimitive.Portal>
   return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />;
 }
 
-function DialogClose(props: React.ComponentProps<typeof DialogPrimitive.Close>) {
-  return <DialogPrimitive.Close data-slot="dialog-close" {...props} />;
+function DialogClose({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Close>) {
+  return (
+    <DialogPrimitive.Close data-slot="dialog-close" {...props} asChild>
+      <Button variant="ghost" size="icon-xs">
+        <span>
+          <X className="icon-sm" />
+          <span className="sr-only">Close</span>
+        </span>
+      </Button>
+    </DialogPrimitive.Close>
+  );
+}
+
+function DialogCancel(props: React.ComponentProps<typeof DialogPrimitive.Close>) {
+  return (
+    <DialogPrimitive.Close data-slot="dialog-cancel" {...props} asChild>
+      <Button variant="outline">Cancel</Button>
+    </DialogPrimitive.Close>
+  );
 }
 
 function DialogOverlay(props: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
   return (
     <DialogPrimitive.Overlay
       data-slot="dialog-overlay"
-      className="data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50 data-[state=closed]:animate-out data-[state=open]:animate-in"
+      className="data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/20 data-[state=closed]:animate-out data-[state=open]:animate-in"
       {...props}
     />
   );
@@ -34,12 +51,10 @@ function DialogOverlay(props: React.ComponentProps<typeof DialogPrimitive.Overla
 
 function DialogContent({
   children,
-  showCloseButton = true,
   side = "center",
   className,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
-  showCloseButton?: boolean;
   side?: "center" | "top" | "bottom" | "left" | "right";
 }) {
   return (
@@ -48,15 +63,15 @@ function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={clsx(
-          "fixed z-50 grid gap-4 border bg-background custom:bg-surface shadow-lg outline-none",
-          "data-[state=closed]:animate-out data-[state=open]:animate-in",
+          "fixed z-50 grid gap-4 bg-background custom:bg-surface shadow-2xl outline-none",
+          "data-[state=closed]:ease-out-strong data-[state=open]:ease-in-out-strong",
           "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
           "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
-          "transition-[transform,opacity] duration-200",
+          "transition-[transform,opacity] duration-150",
           side === "center" &&
-            "top-[50%] left-[50%] w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] rounded-xl p-6 sm:max-w-md",
+            "top-[50%] left-[50%] w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] rounded-3xl p-4 sm:top-[25%] sm:max-w-lg",
           side === "top" &&
-            "inset-x-0 top-[1rem] mx-auto h-auto w-full max-w-[calc(100%-2rem)] rounded-xl p-6 sm:max-w-md",
+            "inset-x-0 top-[1rem] mx-auto h-auto w-full max-w-[calc(100%-2rem)] rounded-3xl p-4 sm:max-w-lg",
           side === "bottom" && "inset-x-0 bottom-0 h-auto rounded-t-xl p-6",
           side === "left" && "inset-y-0 left-0 h-full w-3/4 rounded-r-xl p-6 sm:max-w-sm",
           side === "right" && "inset-y-0 right-0 h-full w-3/4 rounded-l-xl p-6 sm:max-w-sm",
@@ -65,14 +80,6 @@ function DialogContent({
         {...props}
       >
         {children}
-        {showCloseButton && (
-          <DialogPrimitive.Close asChild data-slot="dialog-close">
-            <Button variant="ghost" size="icon-xs" className="absolute top-2 right-2">
-              <X className="icon-sm" />
-              <span className="sr-only">Close</span>
-            </Button>
-          </DialogPrimitive.Close>
-        )}
       </DialogPrimitive.Content>
     </DialogPortal>
   );
@@ -114,6 +121,7 @@ function DialogDescription(props: React.ComponentProps<typeof DialogPrimitive.De
 
 export {
   Dialog,
+  DialogCancel,
   DialogClose,
   DialogContent,
   DialogDescription,

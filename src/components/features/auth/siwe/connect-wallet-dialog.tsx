@@ -3,6 +3,7 @@ import { Suspense, lazy, useEffect, useState } from "react";
 import { ConnectWalletSkeleton } from "@/components/features/auth/siwe/connect-wallet-skeleton";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -42,7 +43,11 @@ export function ConnectWalletDialog({ trigger, mode }: Props) {
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{mode === "link" ? "Link Wallet" : "Sign In With Ethereum"}</DialogTitle>
+          <div className="flex items-center justify-between">
+            <DialogTitle>{mode === "link" ? "Link Wallet" : "Sign In With Ethereum"}</DialogTitle>
+            <DialogClose />
+          </div>
+
           <DialogDescription>
             Connect your wallet to get started.{" "}
             <a

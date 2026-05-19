@@ -41,7 +41,7 @@ export function DataTable({ table }: Props) {
         {(!isEmpty || isFiltered) && (
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} data-static="true">
+              <TableRow key={headerGroup.id} data-static="true" className="hover:bg-none">
                 {headerGroup.headers.map((header) => (
                   <HeaderCell key={header.id} header={header} />
                 ))}

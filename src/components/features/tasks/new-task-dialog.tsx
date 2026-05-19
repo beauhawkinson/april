@@ -5,16 +5,21 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Kbd } from "@/components/ui/kbd";
+import { toast } from "@/components/ui/toast";
 import useDialogStore, { DialogType } from "@/lib/hooks/use-dialog-store";
 import { useIsMobile } from "@/lib/hooks/use-mobile";
 import { addTask } from "@/server/functions/task/add-task";
+
+import type { ComponentProps } from "react";
 
 const NewTaskDialog = () => {
   const { newTask } = useSearch({ from: "/_authenticated/tasks/" });
@@ -32,9 +37,15 @@ const NewTaskDialog = () => {
 
   const canSubmit = name.trim().length > 0 && name.length <= 256 && !isSubmitting;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit: ComponentProps<"form">["onSubmit"] = async (e) => {
     e.preventDefault();
-    if (!canSubmit) return;
+    if (!canSubmit) {
+      toast.error({
+        title: "Invalid task name",
+        description: "Task name must be between 1 and 256 characters.",
+      });
+      return;
+    }
     setIsSubmitting(true);
     try {
       await addTaskFn({ data: { name: name.trim() } });
@@ -84,26 +95,27 @@ const NewTaskDialog = () => {
           <Kbd>C</Kbd>
         </Button>
       </DialogTrigger>
-      <DialogContent aria-describedby={undefined} side={isMobile ? "top" : "center"}>
-        <DialogHeader>
-          <DialogTitle>New Task</DialogTitle>
-        </DialogHeader>
+      <DialogContent aria-describedby={undefined}>
+        <form onSubmit={handleSubmit} className="space-y-0">
+          <DialogHeader className="flex items-center justify-between">
+            <DialogTitle>New Task</DialogTitle>
+            <DialogClose />
+          </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-1">
           <Input
             autoFocus
             aria-label="Name"
             placeholder="Enter a task name..."
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="h-8"
+            className="h-8 border-0 px-0!"
           />
 
-          <div className="mt-4 flex justify-end">
-            <Button variant="primary" type="submit" disabled={!canSubmit} withPress>
+          <DialogFooter>
+            <Button variant="primary" type="submit" withPress>
               Create task
             </Button>
-          </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

@@ -2,8 +2,16 @@ import { Braces } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/toast";
 import useDialogStore, { DialogType } from "@/lib/hooks/use-dialog-store";
 
 import type { LchTuple } from "@/lib/utils/theme";
@@ -81,6 +89,10 @@ const ImportThemeDialog = ({ onChange }: Props) => {
   };
 
   const handlePrettify = () => {
+    if (!importValue.trim()) {
+      toast.error({ title: "Input is empty" });
+      return;
+    }
     try {
       const parsed = JSON.parse(importValue);
       setImportValue(JSON.stringify(parsed, null, 2));
@@ -91,6 +103,11 @@ const ImportThemeDialog = ({ onChange }: Props) => {
   };
 
   const handleImport = () => {
+    if (!importValue.trim()) {
+      toast.error({ title: "Input is empty" });
+      return;
+    }
+
     let parsed: unknown;
     try {
       parsed = JSON.parse(importValue);
@@ -118,8 +135,9 @@ const ImportThemeDialog = ({ onChange }: Props) => {
   return (
     <Dialog open={isImportThemeOpen} onOpenChange={setIsImportThemeOpen}>
       <DialogContent aria-describedby={undefined}>
-        <DialogHeader>
+        <DialogHeader className="flex items-center justify-between">
           <DialogTitle>Import Theme</DialogTitle>
+          <DialogClose />
         </DialogHeader>
 
         <Textarea
@@ -140,21 +158,16 @@ const ImportThemeDialog = ({ onChange }: Props) => {
           </div>
         )}
 
-        <div className="flex items-center justify-end gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handlePrettify}
-            disabled={!importValue.trim()}
-          >
+        <DialogFooter>
+          <Button variant="outline" size="sm" onClick={handlePrettify}>
             <Braces className="icon-sm" />
             Prettify
           </Button>
 
-          <Button onClick={handleImport} disabled={!importValue.trim()}>
+          <Button variant="primary" onClick={handleImport}>
             Import
           </Button>
-        </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

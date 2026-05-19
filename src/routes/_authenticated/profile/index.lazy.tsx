@@ -239,17 +239,17 @@ function ProfilePage() {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Delete account</DialogTitle>
+                <div className="flex items-center justify-between">
+                  <DialogTitle>Delete account</DialogTitle>
+                  <DialogClose />
+                </div>
                 <DialogDescription>
                   Are you sure you want to delete your account? This action cannot be undone.
                 </DialogDescription>
               </DialogHeader>
 
               <DialogFooter>
-                <DialogClose asChild>
-                  <Button variant="ghost">Cancel</Button>
-                </DialogClose>
-                <Button variant="destructive" onClick={handleDeleteAccount}>
+                <Button variant="destructive" onClick={handleDeleteAccount} withPress>
                   Delete
                 </Button>
               </DialogFooter>

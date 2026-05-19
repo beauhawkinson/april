@@ -46,36 +46,27 @@ function SignInPage() {
   };
 
   return (
-    <div className="flex min-h-dvh w-full flex-col items-center justify-center bg-background px-4">
-      <div
-        className="pointer-events-none fixed inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage:
-            "linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-        }}
-      />
-      <div
-        className="pointer-events-none fixed inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 80% 50% at 50% -10%, oklch(0.646 0.196 293.756 / 0.12), transparent)",
-        }}
-      />
-
+    <div className="flex min-h-dvh w-full flex-col items-center justify-center bg-background px-4 py-12">
       <div className="relative w-full max-w-sm">
-        <Link variant="ghost" to="/">
+        <Link variant="ghost" to="/" className="custom:hover:bg-surface">
           <ArrowLeft className="icon-sm" />
           Back
         </Link>
 
-        <div className="mt-6 mb-8 text-center">
-          <span className="font-semibold text-foreground text-xl">{app.name}</span>
-          <h1 className="mt-2 font-bold text-2xl text-foreground tracking-tight">Welcome back</h1>
-          <p className="mt-1 text-muted-foreground text-sm">Choose how you'd like to sign in</p>
+        <div className="mt-6 mb-8 flex flex-col items-center text-center">
+          <div
+            aria-hidden
+            className="mb-4 flex size-12 items-center justify-center rounded-xl border bg-surface"
+          >
+            <span className="font-bold text-foreground text-lg">
+              {app.name.charAt(0).toUpperCase()}
+            </span>
+          </div>
+          <h1 className="font-bold text-2xl text-foreground tracking-tight">Welcome back</h1>
+          <p className="mt-1.5 text-muted-foreground text-sm">Sign in to continue to {app.name}</p>
         </div>
 
-        <div className="rounded-xl border bg-background p-8 shadow-sm">
+        <div className="rounded-xl border bg-surface p-6">
           <div className="grid gap-2">
             <Button
               variant="outline"

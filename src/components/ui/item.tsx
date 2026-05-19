@@ -37,7 +37,7 @@ function ItemGroup({
 }
 
 const itemVariants = cva(
-  "group/item flex items-center bg-surface transition-none [a]:hover:bg-muted/50 [a]:transition-colors duration-100 flex-wrap outline-none focus-visible:border-primary focus-visible:ring-primary/50",
+  "group/item flex items-center bg-surface transition-none [a]:hover:bg-muted/50 flex-wrap outline-none focus-visible:border-primary focus-visible:ring-primary/50",
   {
     variants: {
       variant: {
