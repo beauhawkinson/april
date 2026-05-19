@@ -16,7 +16,6 @@ import { Input } from "@/components/ui/input";
 import { Kbd } from "@/components/ui/kbd";
 import { toast } from "@/components/ui/toast";
 import useDialogStore, { DialogType } from "@/lib/hooks/use-dialog-store";
-import { useIsMobile } from "@/lib/hooks/use-mobile";
 import { addTask } from "@/server/functions/task/add-task";
 
 import type { ComponentProps } from "react";
@@ -26,7 +25,6 @@ const NewTaskDialog = () => {
   const addTaskFn = useServerFn(addTask);
   const router = useRouter();
   const navigate = useNavigate();
-  const isMobile = useIsMobile();
 
   const { isOpen: isCreateTaskOpen, setIsOpen: setIsCreateTaskOpen } = useDialogStore({
     type: DialogType.CreateTask,
