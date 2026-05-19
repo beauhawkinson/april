@@ -40,12 +40,12 @@ function AuthenticatedLayout() {
 
 function PhoneLayout() {
   return (
-    <div className="flex min-h-svh w-full flex-col overflow-auto bg-content">
+    <main className="flex min-h-svh w-full flex-col overflow-auto bg-content">
       <div className="flex-1 pb-24">
         <Outlet />
       </div>
       <MobileBottomNav />
-    </div>
+    </main>
   );
 }
 

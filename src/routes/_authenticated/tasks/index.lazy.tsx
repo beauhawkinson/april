@@ -105,16 +105,15 @@ function TasksPage() {
         minSize: 32,
         maxSize: 32,
         sortingFn: "datetime",
+        meta: {
+          headerClassName: "hidden sm:table-cell",
+          cellClassName: "hidden sm:table-cell",
+        },
         cell: ({ getValue }) => {
           const createdAt = new Date(getValue() as string);
-          return (
-            <div className="ml-4 hidden text-muted-foreground text-sm sm:block">
-              {formatDate(createdAt)}
-            </div>
-          );
+          return <div className="ml-4 text-muted-foreground text-sm">{formatDate(createdAt)}</div>;
         },
-        // also hide the header:
-        header: () => <span className="hidden sm:block">Created</span>,
+        header: () => "Created",
       },
     ],
     [],
@@ -213,6 +212,7 @@ function TasksPage() {
                 className="sm:hidden"
                 onClick={() => setIsSearchTaskOpen(true)}
                 disabled={data.length === 0}
+                aria-label="Search tasks"
               >
                 <Search className="icon-sm mx-auto" />
               </Button>

@@ -55,7 +55,7 @@ function SignInPage() {
   };
 
   return (
-    <div className="flex min-h-dvh w-full flex-col items-center justify-center bg-background px-4 py-12">
+    <main className="flex min-h-dvh w-full flex-col items-center justify-center bg-background px-4 py-12">
       <div className="relative w-full max-w-sm">
         <Link variant="ghost" to="/" className="custom:hover:bg-surface">
           <ArrowLeft className="icon-sm" />
@@ -137,6 +137,6 @@ function SignInPage() {
           .
         </p>
       </div>
-    </div>
+    </main>
   );
 }

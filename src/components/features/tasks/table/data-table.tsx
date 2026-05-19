@@ -22,6 +22,11 @@ declare module "@tanstack/react-table" {
     deleteTask: (rowId: string) => void;
     restoreTask: (task: TData) => void;
   }
+
+  interface ColumnMeta<TData extends RowData, TValue> {
+    headerClassName?: string;
+    cellClassName?: string;
+  }
 }
 
 interface Props {
@@ -89,6 +94,7 @@ export function DataTable({ table }: Props) {
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
+                      className={cell.column.columnDef.meta?.cellClassName}
                       style={{
                         width: cell.column.getSize(),
                         maxWidth: cell.column.getSize(),

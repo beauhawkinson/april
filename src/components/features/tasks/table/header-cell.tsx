@@ -17,6 +17,7 @@ const HeaderCell = ({ header }: Props) => {
   const { column, getContext } = header;
   const sortDirection = column.getIsSorted();
   const canSort = column.getCanSort();
+  const headerClassName = column.columnDef.meta?.headerClassName;
 
   const hasAnySorting = getContext().table.getState().sorting.length > 0;
   const isDefaultSortColumn = header.id === "name" && !hasAnySorting;
@@ -26,11 +27,15 @@ const HeaderCell = ({ header }: Props) => {
     width: `${header.getSize()}px`,
     minWidth: `${header.getSize()}px`,
     maxWidth: `${header.getSize()}px`,
+    textAlign: "left" as const,
+    height: "40px",
   };
 
   if (!canSort) {
     return (
-      <TableHead style={cellStyle}>{flexRender(column.columnDef.header, getContext())}</TableHead>
+      <TableHead style={cellStyle} className={headerClassName}>
+        {flexRender(column.columnDef.header, getContext())}
+      </TableHead>
     );
   }
 
@@ -41,7 +46,7 @@ const HeaderCell = ({ header }: Props) => {
   const SortIcon = sortDirection === "asc" ? ArrowUp : ArrowDown;
 
   return (
-    <TableHead colSpan={header.colSpan} style={cellStyle}>
+    <TableHead colSpan={header.colSpan} style={cellStyle} className={headerClassName}>
       <Tooltip delayDuration={500}>
         <TooltipTrigger asChild>
           <Button variant="ghost" onClick={handleSort} className="group text-sm">

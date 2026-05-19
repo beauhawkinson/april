@@ -52,6 +52,7 @@ const MobileBottomNav = () => {
                   activeProps={{
                     className: "text-foreground bg-muted custom:bg-surface border-border",
                   }}
+                  aria-label={item.label}
                 >
                   <item.icon className="size-4 shrink-0" />
                   {item.label}
@@ -68,6 +69,7 @@ const MobileBottomNav = () => {
                   search={{ newTask: true, archived: undefined }}
                   className={mobileNavClass}
                   onClick={() => setOpen(false)}
+                  aria-label="New Task"
                 >
                   <Plus className="size-4" />
                 </RouterLink>
@@ -82,6 +84,7 @@ const MobileBottomNav = () => {
                   type="button"
                   className={mobileNavClass}
                   onClick={() => setIsSearchTaskOpen(true)}
+                  aria-label="Search tasks"
                 >
                   <Search className="size-4" />
                 </button>
@@ -90,11 +93,17 @@ const MobileBottomNav = () => {
                   to="/tasks"
                   search={{ newTask: true, archived: undefined }}
                   className={mobileNavClass}
+                  aria-label="New Task"
                 >
                   <Plus className="size-4" />
                 </RouterLink>
 
-                <button type="button" className={mobileNavClass} onClick={() => setOpen((v) => !v)}>
+                <button
+                  type="button"
+                  className={mobileNavClass}
+                  onClick={() => setOpen((v) => !v)}
+                  aria-label="Open navigation menu"
+                >
                   <MoreHorizontal className="size-4" />
                 </button>
               </>
@@ -106,12 +115,18 @@ const MobileBottomNav = () => {
                     to={item.to}
                     className={mobileNavClass}
                     activeProps={{ className: "text-foreground bg-muted custom:bg-surface" }}
+                    aria-label={item.label}
                   >
                     <item.icon className="size-4" />
                   </RouterLink>
                 ))}
 
-                <button type="button" className={mobileNavClass} onClick={() => setOpen((v) => !v)}>
+                <button
+                  type="button"
+                  className={mobileNavClass}
+                  onClick={() => setOpen((v) => !v)}
+                  aria-label="Open navigation menu"
+                >
                   <MoreHorizontal className="size-4" />
                 </button>
               </>
