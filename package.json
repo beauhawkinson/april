@@ -10,8 +10,7 @@
     "prepare": "lefthook install",
     "generate": "bun run --env-file .env.local drizzle-kit generate",
     "migrate": "bun run --env-file .env.local drizzle-kit migrate",
-    "studio": "bun run --env-file .env.local drizzle-kit studio",
-    "generate:icons": "bun scripts/generate-icons.ts"
+    "studio": "bun run --env-file .env.local drizzle-kit studio"
   },
   "dependencies": {
     "@better-auth/core": "^1.6.5",
@@ -53,11 +52,9 @@
     "@types/pg": "^8.10.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
-    "@types/sharp": "^0.32.0",
     "@vitejs/plugin-react": "^6.0.1",
     "drizzle-kit": "^0.31.8",
     "lefthook": "^2.1.6",
-    "sharp": "^0.34.5",
     "tw-animate-css": "^1.4.0",
     "typescript": "^5.9.3",
     "vite": "^8.0.11"
