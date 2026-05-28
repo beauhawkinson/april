@@ -71,7 +71,10 @@ function LandingPage() {
       {/* Nav */}
       <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur-sm">
         <div className="mx-auto flex h-12 max-w-5xl items-center justify-between px-4 sm:px-6">
-          <span className="font-semibold text-lg">{app.name}</span>
+          <div className="flex items-center gap-2">
+            <img src="/favicon.svg" alt={`${app.name} Logo`} className="size-5" />
+            <span className="font-semibold text-lg">{app.name}</span>
+          </div>
           <nav className="flex items-center gap-1 sm:gap-2">
             {session ? (
               <Link

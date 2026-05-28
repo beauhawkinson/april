@@ -36,6 +36,7 @@ const AppSidebar = () => {
             <div className="flex items-center justify-between">
               <div className="font-medium text-lg group-data-[collapsible=icon]:hidden">
                 <Link to="/" size="md" className="border-transparent focus-visible:border-primary">
+                  <img src="/favicon.svg" alt={`${app.name} Logo`} className="size-5" />
                   {app.name}
                 </Link>
               </div>
