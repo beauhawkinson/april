@@ -1,83 +1,57 @@
-import { useRouter } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
-import { Archive, Trash } from "lucide-react";
+import { Archive, ArchiveRestore, Trash } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
-import { archiveTask } from "@/server/functions/task/archive-task";
-import { deleteTask } from "@/server/functions/task/delete-task";
+import { useArchiveTask, useDeleteTask, useRestoreTask } from "@/lib/sync/use-mutations";
 
 import type { Table as TableProps } from "@tanstack/react-table";
 import type { Task } from "@/lib/db/schema";
 
 interface Props {
   table: TableProps<Task>;
+  archived?: boolean;
 }
 
-const TableActions = ({ table }: Props) => {
-  const router = useRouter();
+const TableActions = ({ table, archived }: Props) => {
   const selectedCount = table.getFilteredSelectedRowModel().rows.length;
-  const deleteTaskFn = useServerFn(deleteTask);
-  const archiveTaskFn = useServerFn(archiveTask);
+  const archive = useArchiveTask();
+  const restore = useRestoreTask();
+  const remove = useDeleteTask();
 
-  const handleArchive = async () => {
+  const handleArchive = () => {
     const selectedRows = table.getFilteredSelectedRowModel().rows;
-
-    for (const row of selectedRows) {
-      if (!row.original.id) continue;
-      table.options.meta?.deleteTask(row.original.id); // optimistically remove
-    }
-
-    try {
-      for (const row of selectedRows) {
-        if (!row.original.id) continue;
-        await archiveTaskFn({ data: { id: row.original.id } });
-      }
-      toast.success({
-        title: "Tasks archived",
-        description: `${selectedCount} ${selectedCount === 1 ? "task has" : "tasks have"} been archived.`,
-      });
-      router.invalidate();
-    } catch (err) {
-      console.error("Failed to archive", err);
-      toast.error({
-        title: "Failed to archive",
-        description: `Could not archive ${selectedCount} ${selectedCount === 1 ? "task" : "tasks"}.`,
-      });
-      router.invalidate();
-    }
-
     table.resetRowSelection();
+    for (const row of selectedRows) {
+      archive(row.original.id);
+    }
+    toast.success({
+      title: "Tasks archived",
+      description: `${selectedRows.length} ${selectedRows.length === 1 ? "task has" : "tasks have"} been archived.`,
+    });
   };
 
-  const handleDelete = async () => {
+  const handleRestore = () => {
     const selectedRows = table.getFilteredSelectedRowModel().rows;
-
-    for (const row of selectedRows) {
-      if (!row.original.id) continue;
-      table.options.meta?.deleteTask(row.original.id);
-    }
-
-    try {
-      for (const row of selectedRows) {
-        if (!row.original.id) continue;
-        await deleteTaskFn({ data: { id: row.original.id } });
-      }
-      toast.success({
-        title: "Tasks deleted",
-        description: `${selectedCount} ${selectedCount === 1 ? "task has" : "tasks have"} been deleted.`,
-      });
-      router.invalidate();
-    } catch (err) {
-      console.error("Failed to delete", err);
-      toast.error({
-        title: "Failed to delete",
-        description: `Could not delete ${selectedCount} ${selectedCount === 1 ? "task" : "tasks"}.`,
-      });
-      router.invalidate();
-    }
-
     table.resetRowSelection();
+    for (const row of selectedRows) {
+      restore(row.original.id);
+    }
+    toast.success({
+      title: "Tasks restored",
+      description: `${selectedRows.length} ${selectedRows.length === 1 ? "task has" : "tasks have"} been moved back to active.`,
+    });
+  };
+
+  const handleDelete = () => {
+    const selectedRows = table.getFilteredSelectedRowModel().rows;
+    table.resetRowSelection();
+    for (const row of selectedRows) {
+      remove(row.original.id);
+    }
+    toast.success({
+      title: "Tasks deleted",
+      description: `${selectedRows.length} ${selectedRows.length === 1 ? "task has" : "tasks have"} been deleted.`,
+    });
   };
 
   if (!selectedCount) return null;
@@ -88,10 +62,17 @@ const TableActions = ({ table }: Props) => {
         {selectedCount} selected <span className="pl-1">—</span>
       </span>
 
-      <Button variant="outline" inverseHover onClick={handleArchive}>
-        <Archive className="icon-sm" />
-        Archive
-      </Button>
+      {archived ? (
+        <Button variant="outline" inverseHover onClick={handleRestore}>
+          <ArchiveRestore className="icon-sm" />
+          Restore
+        </Button>
+      ) : (
+        <Button variant="outline" inverseHover onClick={handleArchive}>
+          <Archive className="icon-sm" />
+          Archive
+        </Button>
+      )}
 
       <Button variant="outline" inverseHover onClick={handleDelete}>
         <Trash className="icon-sm" />

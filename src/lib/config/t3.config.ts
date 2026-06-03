@@ -1,8 +1,9 @@
 import { createEnv } from "@t3-oss/env-core";
-import { minLength, pipe, string, url } from "valibot";
+import { minLength, optional, pipe, string, url } from "valibot";
 
 const requiredString = () => pipe(string(), minLength(1));
 const requiredUrl = () => pipe(string(), url());
+const optionalString = () => optional(pipe(string(), minLength(1)));
 
 export const env = createEnv({
   server: {
@@ -29,6 +30,11 @@ export const env = createEnv({
     // stripe
     STRIPE_SECRET_KEY: requiredString(),
     STRIPE_WEBHOOK_SECRET: requiredString(),
+
+    // upstash redis (page views)
+    UPSTASH_REDIS_REST_URL: requiredUrl(),
+    UPSTASH_REDIS_REST_TOKEN: requiredString(),
+    BLOCKED_IPS: optionalString(),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,

@@ -28,6 +28,9 @@ import {
 } from "@/components/ui/select";
 import { useDebounce } from "@/lib/hooks/use-debounce";
 import useDialogStore, { DialogType } from "@/lib/hooks/use-dialog-store";
+import { taskStore } from "@/lib/sync/task-store";
+import { useArchiveTask, useDeleteTask, useUpdateTask } from "@/lib/sync/use-mutations";
+import { useBootstrapTasks, useTaskCounts, useTasks } from "@/lib/sync/use-tasks";
 import { formatDate } from "@/lib/utils/format";
 
 import type {
@@ -44,10 +47,19 @@ export const Route = createLazyFileRoute("/_authenticated/tasks/")({
 });
 
 function TasksPage() {
-  const { tasks, counts } = Route.useLoaderData();
+  const { changes, newVersion, counts: serverCounts } = Route.useLoaderData();
   const { archived, newTask } = Route.useSearch();
 
-  const [data, setData] = useState(tasks ?? []);
+  // Store integration
+  const bootstrap = useBootstrapTasks();
+  const data = useTasks(archived);
+  const counts = useTaskCounts();
+
+  // Mutation hooks (closed over by table meta below)
+  const update = useUpdateTask();
+  const remove = useDeleteTask();
+  const archive = useArchiveTask();
+
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -142,23 +154,22 @@ function TasksPage() {
     onSortingChange: setSorting,
     meta: {
       updateTask: (rowId: string, columnId: string, value: unknown) => {
-        setData((old) =>
-          old.map((row) => {
-            if (row.id === rowId) {
-              return {
-                ...row,
-                [columnId]: value,
-              };
-            }
-            return row;
-          }),
-        );
+        // columnId comes from the column accessorKey — "name" and "description" are the editable ones
+        if (columnId === "name" || columnId === "description") {
+          update(rowId, { [columnId]: value as string });
+        }
       },
       deleteTask: (rowId: string) => {
-        setData((old) => old.filter((row) => row.id !== rowId));
+        remove(rowId);
       },
+      archiveTask: (rowId: string) => {
+        // We can reuse the delete mutation since archive is just a soft delete (sets archivedAt but doesn't remove the row)
+        archive(rowId);
+      },
+      // restoreTask is used by undo flows in TableActions — keep it as a direct store write
+      // since it doesn't need a server call (the server already has the right state)
       restoreTask: (task: Task) => {
-        setData((old) => [...old, task]);
+        taskStore.upsert(task);
       },
     },
   });
@@ -167,9 +178,10 @@ function TasksPage() {
     table.getColumn("name")?.setFilterValue(debouncedSearch);
   }, [debouncedSearch, table]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: We only want to bootstrap when the initial tasks from the loader arrive, not on every change to tasks
   useEffect(() => {
-    setData(tasks ?? []);
-  }, [tasks]);
+    bootstrap(changes ?? [], newVersion ?? 0, serverCounts);
+  }, [changes, newVersion, serverCounts]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: Allow disabling exhaustive deps for newTask since we only want to open the dialog when it changes from false to true, not on every change
   useEffect(() => {
@@ -182,7 +194,7 @@ function TasksPage() {
 
       <div className="-mt-6 sm:-mt-10">
         <div className="h-10 min-h-10">
-          <TableActions table={table} />
+          <TableActions table={table} archived={archived} />
         </div>
 
         <div className="mt-1 flex flex-col rounded-xl border bg-surface">
@@ -193,7 +205,7 @@ function TasksPage() {
                 <Search
                   strokeWidth={2.5}
                   className={clsx(
-                    "absolute left-2.5 size-3.5 text-muted-foreground",
+                    "absolute left-2.5 size-3.5 text-secondary-foreground",
                     data.length === 0 && "opacity-50",
                   )}
                 />
@@ -230,23 +242,22 @@ function TasksPage() {
                 <SelectTrigger asChild>
                   <Button
                     variant="outline"
-                    disabled={counts.active === 0 && counts.archived === 0}
+                    disabled={(counts.active ?? 0) + (counts.archived ?? 0) === 0}
                     aria-label="Filter tasks by status"
                   >
                     <span className="sr-only">Filter tasks by status</span>
 
                     <SelectValue placeholder="Select view" />
-                    <ChevronDown className="icon-xs ml-1 text-muted-foreground" />
+                    <ChevronDown className="icon-xs ml-1 text-secondary-foreground" />
                   </Button>
                 </SelectTrigger>
                 <SelectContent align="start">
                   <SelectGroup>
-                    <SelectItem value="active" disabled={counts.active === 0}>
+                    <SelectItem value="active" disabled={counts.active === 0 && !archived}>
                       Active{" "}
                       {archived && <span className="text-muted-foreground">({counts.active})</span>}
                     </SelectItem>
-
-                    <SelectItem value="archived" disabled={counts.archived === 0}>
+                    <SelectItem value="archived" disabled={counts.archived === 0 && archived}>
                       Archived{" "}
                       {!archived && (
                         <span className="text-muted-foreground">({counts.archived})</span>

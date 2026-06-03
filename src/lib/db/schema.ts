@@ -1,8 +1,10 @@
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
+  bigint,
   boolean,
   index,
   integer,
+  pgSequence,
   pgTable,
   text,
   timestamp,
@@ -17,6 +19,10 @@ const generateDefaultId = () => uuid().primaryKey().defaultRandom();
 const generateDefaultDate = () =>
   timestamp({ precision: 6, mode: "string", withTimezone: true }).notNull().defaultNow();
 
+export const taskVersionSeq = pgSequence("task_version_seq");
+
+const nextVersion = () => sql`nextval('task_version_seq')`;
+
 export const tasks = pgTable(
   "tasks",
   {
@@ -27,10 +33,18 @@ export const tasks = pgTable(
     name: text().notNull(),
     description: text().notNull(),
     archivedAt: timestamp("archived_at", { withTimezone: true }),
+    deletedAt: timestamp("deleted_at", { withTimezone: true }),
+    version: bigint("version", { mode: "number" }).notNull().default(nextVersion()),
     createdAt: generateDefaultDate(),
-    updatedAt: generateDefaultDate(),
+    updatedAt: timestamp({ precision: 6, mode: "string", withTimezone: true })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date().toISOString()),
   },
-  (table) => [uniqueIndex().on(table.id), index().on(table.userId)],
+  (table) => [
+    uniqueIndex().on(table.id),
+    index("tasks_user_version_idx").on(table.userId, table.version),
+  ],
 );
 
 export const user = pgTable("user", {

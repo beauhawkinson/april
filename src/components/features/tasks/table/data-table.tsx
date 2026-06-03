@@ -1,3 +1,4 @@
+import { useRouterState } from "@tanstack/react-router";
 import { flexRender } from "@tanstack/react-table";
 import { CheckSquare } from "lucide-react";
 import { useRef } from "react";
@@ -12,6 +13,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
+import { useIsBootstrapped } from "@/lib/sync/use-tasks";
 
 import type { RowData, Table as TableProps } from "@tanstack/react-table";
 import type { Task } from "@/lib/db/schema";
@@ -20,6 +22,7 @@ declare module "@tanstack/react-table" {
   interface TableMeta<TData extends RowData> {
     updateTask: (rowId: string, columnId: string, value: unknown) => void;
     deleteTask: (rowId: string) => void;
+    archiveTask: (rowId: string) => void;
     restoreTask: (task: TData) => void;
   }
 
@@ -35,10 +38,11 @@ interface Props {
 
 export function DataTable({ table }: Props) {
   const tableContainerRef = useRef<HTMLDivElement>(null);
-
+  const isNavigating = useRouterState({ select: (s) => s.status === "pending" });
+  const isBootstrapped = useIsBootstrapped();
   const { rows } = table.getRowModel();
-  const isEmpty = !rows?.length;
   const isFiltered = table.getState().columnFilters.length > 0;
+  const isEmpty = isBootstrapped && !isNavigating && !rows?.length;
 
   return (
     <div ref={tableContainerRef} className="min-h-full flex-1 overflow-auto">
@@ -55,7 +59,16 @@ export function DataTable({ table }: Props) {
           </TableHeader>
         )}
         <TableBody>
-          {isEmpty ? (
+          {!isBootstrapped ? (
+            <TableRow data-static="true">
+              <TableCell
+                colSpan={table.getAllColumns().length}
+                className="h-32 text-center text-muted-foreground text-sm"
+              >
+                Loading tasks...
+              </TableCell>
+            </TableRow>
+          ) : isEmpty ? (
             <TableRow data-static="true" className="hover:bg-inherit">
               <TableCell colSpan={table.getAllColumns().length}>
                 <Empty>
@@ -83,30 +96,28 @@ export function DataTable({ table }: Props) {
               </TableCell>
             </TableRow>
           ) : (
-            rows.map((row) => {
-              return (
-                <TableRow
-                  key={row.id}
-                  data-row-id={row.id}
-                  tabIndex={0}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={cell.column.columnDef.meta?.cellClassName}
-                      style={{
-                        width: cell.column.getSize(),
-                        maxWidth: cell.column.getSize(),
-                        minWidth: cell.column.getSize(),
-                      }}
-                    >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              );
-            })
+            rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-row-id={row.id}
+                tabIndex={0}
+                data-state={row.getIsSelected() && "selected"}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell
+                    key={cell.id}
+                    className={cell.column.columnDef.meta?.cellClassName}
+                    style={{
+                      width: cell.column.getSize(),
+                      maxWidth: cell.column.getSize(),
+                      minWidth: cell.column.getSize(),
+                    }}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
           )}
         </TableBody>
       </Table>

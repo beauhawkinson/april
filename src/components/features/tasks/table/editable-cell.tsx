@@ -1,8 +1,6 @@
-import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 
 import { Input } from "@/components/ui/input";
-import { updateTask } from "@/server/functions/task/update-task";
 
 import type { CellContext } from "@tanstack/react-table";
 import type { KeyboardEvent } from "react";
@@ -14,16 +12,13 @@ const EditableCell = ({ getValue, row, column, table }: CellContext<Task, unknow
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const didCancelRef = useRef(false);
-  const updateTaskFn = useServerFn(updateTask);
 
   const isNameColumn = column.id === "name";
 
-  // Sync external updates when not editing
   useEffect(() => {
     if (!isEditing) setValue(initialValue);
   }, [initialValue, isEditing]);
 
-  // Auto-focus with caret at end
   useEffect(() => {
     if (isEditing && inputRef.current) {
       const input = inputRef.current;
@@ -32,32 +27,20 @@ const EditableCell = ({ getValue, row, column, table }: CellContext<Task, unknow
     }
   }, [isEditing]);
 
-  const commit = async () => {
+  const commit = () => {
     const trimmed = value.trim();
     if (trimmed === initialValue.trim()) return;
 
-    // Validate required task name
     if (isNameColumn && !trimmed) {
       inputRef.current?.focus();
       return;
     }
 
-    // Optimistic update
     if (!row.original.id) return;
-    table.options.meta?.updateTask(row.original.id, column.id, trimmed);
 
-    try {
-      await updateTaskFn({
-        data: {
-          ...row.original,
-          [column.id]: trimmed,
-        },
-      });
-    } catch (err) {
-      console.error("Failed to save task", err);
-      // Optionally rollback UI
-      table.options.meta?.updateTask(row.original.id, column.id, initialValue);
-    }
+    // The meta function now handles everything: snapshot → outbox → optimistic
+    // update → server call → rollback on failure. Nothing else needed here.
+    table.options.meta?.updateTask(row.original.id, column.id, trimmed);
   };
 
   const cancel = () => {

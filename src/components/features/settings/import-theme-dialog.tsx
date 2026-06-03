@@ -147,6 +147,10 @@ const ImportThemeDialog = ({ onChange }: Props) => {
           className={`h-48 resize-none font-mono text-sm ${error ? "border-destructive focus-visible:border-destructive" : ""}`}
         />
 
+        <span className="-mt-3 ml-auto text-faded-foreground text-sm">
+          Inspired by Linear. try copying a custom theme from their site.
+        </span>
+
         {error && (
           <div className="flex items-start justify-between gap-2 rounded-lg border border-destructive/20 bg-destructive/5 px-3 py-2 text-destructive text-sm">
             <span>{errorMessages[error]}</span>
