@@ -105,7 +105,7 @@ export default function ThemeChanger({ theme, onChange }: Props) {
         <button
           type="button"
           onClick={() => handleZoneClick("sidebar")}
-          className="row-span-2 hidden h-60 cursor-crosshair! flex-col items-start justify-start rounded-xl border border-border border-dashed bg-sidebar pt-2 text-sidebar-foreground outline-none transition-transform hover:bg-sidebar/80 hover:text-sidebar-foreground focus-visible:border focus-visible:border-primary active:scale-[0.99] sm:flex"
+          className="row-span-2 hidden h-60 cursor-crosshair! flex-col items-start justify-start rounded-xl border border-faded-foreground border-dashed bg-sidebar pt-2 text-sidebar-foreground outline-none transition-transform hover:bg-sidebar/80 hover:text-sidebar-foreground focus-visible:border focus-visible:border-primary active:scale-[0.99] sm:flex"
           style={{
             opacity: activeZone !== null && activeZone !== "sidebar" ? 0.3 : 1,
           }}
@@ -113,7 +113,7 @@ export default function ThemeChanger({ theme, onChange }: Props) {
           <span className="mx-auto flex cursor-crosshair select-none">Sidebar</span>
 
           {/* Mock nav items showing sidebar-accent contrast */}
-          <div className="mt-4 flex w-full cursor-crosshair flex-col justify-start gap-1">
+          <div className="mt-4 flex w-full cursor-crosshair flex-col justify-start gap-1 px-1">
             <div className="h-4 cursor-crosshair rounded-md bg-sidebar-accent" />
             <div className="h-4 w-full cursor-crosshair rounded-md bg-sidebar-accent/60" />
             <div className="h-4 w-full cursor-crosshair rounded-md bg-sidebar-accent/60" />
@@ -124,13 +124,13 @@ export default function ThemeChanger({ theme, onChange }: Props) {
         <button
           type="button"
           onMouseDown={() => handleZoneClick("content")}
-          className="z-10 col-span-2 flex h-60 cursor-crosshair! flex-col items-start justify-start rounded-xl border border-border border-dashed bg-content px-8 text-foreground outline-none transition-transform hover:bg-content/80 focus-visible:border focus-visible:border-primary active:scale-[0.99] sm:col-span-1"
+          className="z-10 col-span-2 flex h-60 cursor-crosshair! flex-col items-start justify-start rounded-xl border border-faded-foreground border-dashed bg-content px-8 text-foreground outline-none transition-transform hover:bg-content/80 focus-visible:border focus-visible:border-primary active:scale-[0.99] sm:col-span-1"
           style={{
             opacity: activeZone !== null && activeZone !== "content" ? 0.3 : 1,
           }}
         >
           <span className="mt-2 w-full cursor-crosshair select-none text-center">Content</span>
-          <div className="border- mt-8 flex w-full flex-1 cursor-crosshair! items-center justify-center rounded-lg rounded-b-none border border-b-0 border-dashed bg-surface">
+          <div className="border- mt-8 flex w-full flex-1 cursor-crosshair! items-center justify-center rounded-lg rounded-b-none border border-faded-foreground border-b-0 border-dashed bg-surface">
             Surface
           </div>
         </button>
@@ -139,7 +139,7 @@ export default function ThemeChanger({ theme, onChange }: Props) {
         <button
           type="button"
           onClick={() => handleZoneClick("accent")}
-          className="col-span-2 mx-auto mt-2 flex h-8 w-full cursor-crosshair! items-center justify-center rounded-lg border border-border border-dashed bg-primary text-center text-primary-foreground opacity-30 outline-none transition-transform hover:bg-primary/80 focus-visible:border focus-visible:border-primary active:scale-[0.99]"
+          className="col-span-2 mx-auto mt-2 flex h-8 w-full cursor-crosshair! items-center justify-center rounded-lg border border-faded-foreground border-dashed bg-primary text-center text-primary-foreground opacity-30 outline-none transition-transform hover:bg-primary/80 focus-visible:border focus-visible:border-primary active:scale-[0.99]"
           style={{
             opacity: activeZone !== null && activeZone !== "accent" ? 0.3 : 1,
           }}

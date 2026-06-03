@@ -311,7 +311,12 @@ function SidebarTrigger({ className, ...props }: React.ComponentProps<"button">)
         <Button
           onClick={toggleSidebar}
           size="icon-md"
-          className={clsx(sidebarItemClass, "w-fit!", className)}
+          className={clsx(
+            sidebarItemClass,
+            "w-fit!",
+            state === "collapsed" ? "hover:cursor-e-resize" : "hover:cursor-w-resize",
+            className,
+          )}
           {...props}
         >
           <PanelLeft className="icon-sm" />

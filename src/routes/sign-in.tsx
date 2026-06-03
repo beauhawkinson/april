@@ -63,14 +63,7 @@ function SignInPage() {
         </Link>
 
         <div className="mt-6 mb-8 flex flex-col items-center text-center">
-          <div
-            aria-hidden
-            className="mb-4 flex size-12 items-center justify-center rounded-xl border bg-surface"
-          >
-            <span className="font-bold text-foreground text-lg">
-              {app.name.charAt(0).toUpperCase()}
-            </span>
-          </div>
+          <img src="/favicon.svg" alt={`${app.name} Logo`} className="mb-4 size-12" />
           <h1 className="font-bold text-2xl text-foreground tracking-tight">Welcome back</h1>
           <p className="mt-1.5 text-muted-foreground text-sm">Sign in to continue to {app.name}</p>
         </div>

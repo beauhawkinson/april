@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import { taskStore } from "@/lib/sync/task-store";
 import { getTasks } from "@/server/functions/task/get-tasks";
 
 export const Route = createFileRoute("/_authenticated/tasks/")({
@@ -16,10 +17,16 @@ export const Route = createFileRoute("/_authenticated/tasks/")({
     archived: search.archived === true || undefined,
     newTask: search.newTask === true || undefined,
   }),
-  loaderDeps: ({ search }) => ({ archived: search.archived }),
-  loader: async ({ deps }) => {
-    const { tasks, counts } = await getTasks({ data: { archived: deps.archived } });
-    return { tasks, counts };
+  loader: async () => {
+    const currentVersion = taskStore.lastSyncId;
+
+    const { changes, newVersion, counts } = await getTasks({
+      data: {
+        sinceVersion: currentVersion,
+      },
+    });
+
+    return { changes, newVersion, counts };
   },
   pendingMs: 0,
 });

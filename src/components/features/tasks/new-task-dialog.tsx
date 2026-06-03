@@ -1,5 +1,4 @@
-import { useNavigate, useRouter, useSearch } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
+import { useNavigate, useRouteContext, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -16,24 +15,25 @@ import { Input } from "@/components/ui/input";
 import { Kbd } from "@/components/ui/kbd";
 import { toast } from "@/components/ui/toast";
 import useDialogStore, { DialogType } from "@/lib/hooks/use-dialog-store";
-import { addTask } from "@/server/functions/task/add-task";
+import { useAddTask } from "@/lib/sync/use-mutations";
 
 import type { ComponentProps } from "react";
 
 const NewTaskDialog = () => {
   const { newTask } = useSearch({ from: "/_authenticated/tasks/" });
-  const addTaskFn = useServerFn(addTask);
-  const router = useRouter();
   const navigate = useNavigate();
+
+  const createTask = useAddTask();
+  const { user } = useRouteContext({ from: "/_authenticated" });
+  const currentUserId = user.id;
 
   const { isOpen: isCreateTaskOpen, setIsOpen: setIsCreateTaskOpen } = useDialogStore({
     type: DialogType.CreateTask,
   });
 
   const [name, setName] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const canSubmit = name.trim().length > 0 && name.length <= 256 && !isSubmitting;
+  const canSubmit = name.trim().length > 0 && name.length <= 256;
 
   const handleSubmit: ComponentProps<"form">["onSubmit"] = async (e) => {
     e.preventDefault();
@@ -44,15 +44,11 @@ const NewTaskDialog = () => {
       });
       return;
     }
-    setIsSubmitting(true);
-    try {
-      await addTaskFn({ data: { name: name.trim() } });
-      router.invalidate();
-      setIsCreateTaskOpen(false);
-      setName("");
-    } finally {
-      setIsSubmitting(false);
-    }
+
+    createTask(name.trim(), currentUserId);
+
+    setIsCreateTaskOpen(false);
+    setName("");
   };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: we only want to listen to changes in isCreateTaskOpen
@@ -110,7 +106,7 @@ const NewTaskDialog = () => {
           />
 
           <DialogFooter>
-            <Button variant="primary" type="submit" withPress>
+            <Button variant="primary" type="submit" withPress disabled={!canSubmit}>
               Create task
             </Button>
           </DialogFooter>

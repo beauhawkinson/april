@@ -8,6 +8,7 @@ import {
 
 import { Toaster } from "@/components/ui/toast";
 import { app } from "@/lib/config/app.config";
+import { useOutboxDrain } from "@/lib/sync/drain";
 import { AppearanceProvider } from "@/providers/appearance-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { getAppearance } from "@/server/functions/preferences/appearance";
@@ -65,6 +66,7 @@ function RootComponent() {
 function RootDocument({ children }: PropsWithChildren) {
   const { themePreferences, appearance } = Route.useLoaderData();
   const { theme, customTheme, css } = themePreferences;
+  useOutboxDrain();
 
   // theme + optional pointer cursor preference
   const htmlClass = [theme, appearance.usePointerCursor && "pointer-cursor"]

@@ -7,7 +7,7 @@ import { auth } from "@/lib/config/auth.config";
 import { db } from "@/lib/db/db";
 import { tasks } from "@/lib/db/schema";
 
-export const deleteTask = createServerFn({ method: "POST" })
+export const restoreTask = createServerFn({ method: "POST" })
   .inputValidator(object({ id: pipe(string(), minLength(1)) }))
   .handler(async ({ data }) => {
     const session = await auth.api.getSession({ headers: getRequestHeaders() });
@@ -15,7 +15,7 @@ export const deleteTask = createServerFn({ method: "POST" })
 
     const [task] = await db
       .update(tasks)
-      .set({ deletedAt: sql`now()`, version: sql`nextval('task_version_seq')` })
+      .set({ archivedAt: null, version: sql`nextval('task_version_seq')` })
       .where(and(eq(tasks.id, data.id), eq(tasks.userId, session.user.id)))
       .returning();
 
